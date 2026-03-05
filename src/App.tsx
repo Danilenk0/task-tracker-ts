@@ -1,5 +1,6 @@
 import "./App.css";
 import Button from "./components/Button";
+import Task from "./components/Task";
 
 function App() {
   return (
@@ -87,6 +88,11 @@ function App() {
           <Button mode="light">Completed</Button>
         </div>
       </div>
+      <Task
+        title="Fix logo blackout issue on other pages"
+        description="Resolve logo visibility/display issues across non-homepage pages"
+        category="Header"
+      ></Task>
     </div>
   );
 }
