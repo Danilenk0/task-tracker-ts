@@ -1,14 +1,20 @@
+import { useState } from "react";
 import "./App.css";
 import Button from "./components/Button";
 import Task from "./components/Task";
+import TaskAddModal from "./components/TaskAddModal";
 
 function App() {
+  const [isShowModal, setIsShowModal] = useState(false);
+  const toggleTaskModal = () => {
+    setIsShowModal((prev) => !prev);
+  };
   return (
     <div className="max-w-6xl mx-auto p-6 my-10 rounded-lg border border-gray-200 bg-gray-200/25">
       <h1 className="text-neutral-900 mb-2">MAJESTEY LONDON</h1>
       <p className="text-neutral-600">Shopify Site Tasks</p>
       <div className="flex items-center  gap-2 mt-7">
-        <Button mode="dark">
+        <Button action={toggleTaskModal} mode="dark">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -93,6 +99,9 @@ function App() {
         description="Resolve logo visibility/display issues across non-homepage pages"
         category="Header"
       ></Task>
+      {isShowModal && (
+        <TaskAddModal toggleTaskModal={toggleTaskModal}></TaskAddModal>
+      )}
     </div>
   );
 }

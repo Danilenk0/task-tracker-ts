@@ -1,6 +1,7 @@
 type ButtonProps = {
   children: React.ReactNode;
   mode: "dark" | "light" | "delete";
+  action: () => void;
 };
 
 const styles = {
@@ -9,9 +10,10 @@ const styles = {
   delete: "text-red-400 border-2 border-gray-200",
 };
 
-function Button({ children, mode }: ButtonProps) {
+function Button({ children, mode, action }: ButtonProps) {
   return (
     <button
+      onClick={action}
       className={`${styles[mode]} rounded-lg flex items-center gap-2 py-2 px-4 border-gray-200 text-sm`}
     >
       {children}
