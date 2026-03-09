@@ -1,20 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Button from "./components/Button";
 import Task from "./components/Task";
 import TaskAddModal from "./components/TaskAddModal";
-
+import type { ITask } from "./types/Task.type.ts";
 function App() {
   const [isShowModal, setIsShowModal] = useState(false);
+  const [tasks, setTasks] = useState<ITask[]>([]);
+  useEffect(() => {
+    setTasks(JSON.parse(localStorage.getItem("tasks") || "[]"));
+  }, []);
   const toggleTaskModal = () => {
     setIsShowModal((prev) => !prev);
+  };
+  const addTask = (formData: ITask) => {
+    const data: ITask[] = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+    data.push(formData);
+    setTasks(data);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   };
   return (
     <div className="max-w-6xl mx-auto p-6 my-10 rounded-lg border border-gray-200 bg-gray-200/25">
       <h1 className="text-neutral-900 mb-2">MAJESTEY LONDON</h1>
       <p className="text-neutral-600">Shopify Site Tasks</p>
       <div className="flex items-center  gap-2 mt-7">
-        <Button action={toggleTaskModal} mode="dark">
+        <Button type="button" action={toggleTaskModal} mode="dark">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -31,7 +42,7 @@ function App() {
           </svg>
           <p>Add task</p>
         </Button>
-        <Button mode="light">
+        <Button action={() => {}} type="button" mode="light">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -48,7 +59,7 @@ function App() {
           </svg>
           <p>Export</p>
         </Button>
-        <Button mode="light">
+        <Button action={() => {}} type="button" mode="light">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -88,19 +99,34 @@ function App() {
           <input className="w-full outline-none bg-transparent" type="text" />
         </form>
         <div className="flex items-center gap-2">
-          <Button mode="dark">All</Button>
-          <Button mode="light">To Do</Button>
-          <Button mode="light">In progress</Button>
-          <Button mode="light">Completed</Button>
+          <Button action={() => {}} type="button" mode="dark">
+            All
+          </Button>
+          <Button action={() => {}} type="button" mode="light">
+            To Do
+          </Button>
+          <Button action={() => {}} type="button" mode="light">
+            In progress
+          </Button>
+          <Button action={() => {}} type="button" mode="light">
+            Completed
+          </Button>
         </div>
       </div>
-      <Task
-        title="Fix logo blackout issue on other pages"
-        description="Resolve logo visibility/display issues across non-homepage pages"
-        category="Header"
-      ></Task>
+      {tasks.map((task, index) => (
+        <Task
+          key={index}
+          title={task.title}
+          description={task.description}
+          category={task.category}
+        ></Task>
+      ))}
+
       {isShowModal && (
-        <TaskAddModal toggleTaskModal={toggleTaskModal}></TaskAddModal>
+        <TaskAddModal
+          addTask={addTask}
+          toggleTaskModal={toggleTaskModal}
+        ></TaskAddModal>
       )}
     </div>
   );

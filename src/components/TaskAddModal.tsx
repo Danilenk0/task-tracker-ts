@@ -1,10 +1,20 @@
 import Button from "../components/Button";
+import { useState } from "react";
+import type { ITask } from "../types/Task.type.ts";
 
 interface TaskAddModalProps {
   toggleTaskModal: () => void;
+  addTask: (fromData: ITask) => void;
 }
 
-function TaskAddModal({ toggleTaskModal }: TaskAddModalProps) {
+function TaskAddModal({ toggleTaskModal, addTask }: TaskAddModalProps) {
+  const [formData, setFormData] = useState<ITask>({
+    title: "",
+    description: "",
+    category: "",
+    status: "todo",
+    time: 0,
+  });
   return (
     <div className="fixed top-0 left-0 bg-black/70 w-full h-full flex items-center">
       <div className="bg-white border-2 border-gray-200 rounded-lg w-2xl mx-auto p-5">
@@ -32,49 +42,96 @@ function TaskAddModal({ toggleTaskModal }: TaskAddModalProps) {
             </p>
           </div>
         </div>
-        <div className="flex flex-col gap-1.5 mb-4">
-          <label htmlFor="title">Task title</label>
-          <input
-            className="border-2 border-gray-200 rounded-sm py-0.5 px-2 bg-neutral-100"
-            id="title"
-            type="text"
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-1.5 mb-4">
-          <label htmlFor="description">Task description (option)</label>
-          <textarea
-            className="border-2 border-gray-200 rounded-sm py-0.5 px-2 bg-neutral-100"
-            id="description"
-            cols={15}
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-1.5 mb-4">
-          <label className="" htmlFor="category">
-            Caregory
-          </label>
-          <select
-            className="border-2 border-gray-200 w-full py-0.5 px-2 rounded-sm "
-            name=""
-            id="caregory"
-          >
-            <option value="Catalog">Catalog</option>
-            <option value="PDP">PDP</option>
-            <option value="Header">Header</option>
-            <option value="Home">Home</option>
-            <option value="Sport & Purple">Sport & Purple</option>
-            <option value="About Us">About Us</option>
-            <option value="Footer">Footer</option>
-            <option value="Mobile">Mobile</option>
-            <option value="Global">Global</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div className="flex gap-2 justify-end">
-          <Button mode="light">Cancel</Button>
-          <Button mode="dark">Save</Button>
-        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            addTask(formData);
+            setFormData({
+              title: "",
+              description: "",
+              category: "",
+              status: "todo",
+              time: 0,
+            });
+            toggleTaskModal();
+          }}
+          action=""
+        >
+          <div className="flex flex-col gap-1.5 mb-4">
+            <label htmlFor="title">Task title</label>
+            <input
+              onChange={(e) =>
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    title: e.target.value,
+                  };
+                })
+              }
+              value={formData.title}
+              className="border-2 border-gray-200 rounded-sm py-0.5 px-2 bg-neutral-100"
+              id="title"
+              type="text"
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 mb-4">
+            <label htmlFor="description">Task description (option)</label>
+            <textarea
+              onChange={(e) =>
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    description: e.target.value,
+                  };
+                })
+              }
+              value={formData.description}
+              className="border-2 border-gray-200 rounded-sm py-0.5 px-2 bg-neutral-100"
+              id="description"
+              cols={15}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 mb-4">
+            <label className="" htmlFor="category">
+              Category
+            </label>
+            <select
+              onChange={(e) =>
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    category: e.target.value,
+                  };
+                })
+              }
+              value={formData.category}
+              className="border-2 border-gray-200 w-full py-0.5 px-2 rounded-sm "
+              name=""
+              id="category"
+            >
+              <option value="Catalog">Catalog</option>
+              <option value="PDP">PDP</option>
+              <option value="Header">Header</option>
+              <option value="Home">Home</option>
+              <option value="Sport & Purple">Sport & Purple</option>
+              <option value="About Us">About Us</option>
+              <option value="Footer">Footer</option>
+              <option value="Mobile">Mobile</option>
+              <option value="Global">Global</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div className="flex gap-2 justify-end">
+            <Button action={() => {}} type="button" mode="light">
+              Cancel
+            </Button>
+            <Button action={() => {}} type="submit" mode="dark">
+              Save
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
