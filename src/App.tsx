@@ -10,22 +10,27 @@ function App() {
   const [filterSelected, setFilterSelected] = useState<
     "all" | "todo" | "inprogress" | "completed"
   >("all");
+
   useEffect(() => {
     setTasks(JSON.parse(localStorage.getItem("tasks") || "[]"));
   }, []);
-  const toggleTaskModal = () => {
+
+  const handleToggleTaskModal = () => {
     setIsShowModal((prev) => !prev);
   };
+
   const handleAddTask = (formData: ITask) => {
     const newTasks = [...tasks, formData];
     setTasks(newTasks);
     localStorage.setItem("tasks", JSON.stringify(newTasks));
   };
+
   const handleDeleteTask = (id: string) => {
     const filteredTasks = tasks.filter((item) => item.id !== id);
     localStorage.setItem("tasks", JSON.stringify(filteredTasks));
     setTasks(filteredTasks);
   };
+
   const handleFilterTasks = (type: TTaskStatus | "all") => {
     setFilterSelected(type);
 
@@ -39,12 +44,23 @@ function App() {
       setTasks(tasksFromStorage.filter((task) => task.status === type));
     }
   };
+
+  const handleUpdateTaskTime = (id: string, newTime: number) => {
+    const updatedTasks = tasks.map((item) =>
+      item.id === id
+        ? { ...item, time: newTime, status: "inprogress" as TTaskStatus }
+        : item,
+    );
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 my-10 rounded-lg border border-gray-200 bg-gray-200/25">
       <h1 className="text-neutral-900 mb-2">MAJESTEY LONDON</h1>
       <p className="text-neutral-600">Shopify Site Tasks</p>
       <div className="flex items-center  gap-2 mt-7">
-        <Button type="button" action={toggleTaskModal} mode="dark">
+        <Button type="button" action={handleToggleTaskModal} mode="dark">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -153,13 +169,14 @@ function App() {
           key={task.id}
           task={task}
           handleDeleteTask={handleDeleteTask}
+          handleUpdateTaskTime={handleUpdateTaskTime}
         ></Task>
       ))}
 
       {isShowModal && (
         <TaskAddModal
           handleAddTask={handleAddTask}
-          toggleTaskModal={toggleTaskModal}
+          handletoggleTaskModal={handleToggleTaskModal}
         ></TaskAddModal>
       )}
     </div>

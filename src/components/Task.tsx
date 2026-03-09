@@ -1,12 +1,39 @@
 import Button from "../components/Button.tsx";
 import type { ITask } from "../types/Task.type.ts";
+import { useState, useEffect } from "react";
 
 interface ITaskProps {
   task: ITask;
   handleDeleteTask: (id: string) => void;
+  handleUpdateTaskTime: (id: string, newTime: number) => void;
 }
 
-function Task({ task, handleDeleteTask }: ITaskProps) {
+function Task({ task, handleDeleteTask, handleUpdateTaskTime }: ITaskProps) {
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [seconds, setSeconds] = useState(task.time || 0);
+
+  useEffect(() => {
+    let interval: number | undefined;
+
+    if (isRunning) {
+      interval = window.setInterval(() => {
+        setSeconds((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isRunning]);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, "0")}:${m
+      .toString()
+      .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 flex gap-4 items-start mt-5">
       <input className="mt-1 w-5 h-5 rounded-lg" type="checkbox" />
@@ -17,24 +44,53 @@ function Task({ task, handleDeleteTask }: ITaskProps) {
           <p className="block py-0.3 px-3 rounded-3xl border border-gray-200 text-[14px]">
             {task.category}
           </p>
-          <p className="text-[14px]">10:00</p>
+          <p className={`text-[14px] ${isRunning && "text-green-600"}`}>
+            {formatTime(seconds)}
+          </p>
         </div>
         <div className="flex items-center gap-2 w-min">
-          <Button action={() => {}} type="button" mode="light">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
-              />
-            </svg>
+          <Button
+            action={() => {
+              setIsRunning((prev) => !prev);
+              if (isRunning) {
+                handleUpdateTaskTime(task.id, seconds);
+              }
+            }}
+            type="button"
+            mode="light"
+          >
+            {isRunning ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 5.25v13.5m-7.5-13.5v13.5"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                />
+              </svg>
+            )}
+
             <p>Start</p>
           </Button>
           <Button action={() => {}} type="button" mode="light">

@@ -3,11 +3,14 @@ import { useState } from "react";
 import type { ITask } from "../types/Task.type.ts";
 
 interface TaskAddModalProps {
-  toggleTaskModal: () => void;
+  handletoggleTaskModal: () => void;
   handleAddTask: (fromData: ITask) => void;
 }
 
-function TaskAddModal({ toggleTaskModal, handleAddTask }: TaskAddModalProps) {
+function TaskAddModal({
+  handleToggleTaskModal,
+  handleAddTask,
+}: TaskAddModalProps) {
   const [formData, setFormData] = useState<ITask>({
     id: crypto.randomUUID(),
     title: "",
@@ -16,11 +19,15 @@ function TaskAddModal({ toggleTaskModal, handleAddTask }: TaskAddModalProps) {
     status: "todo",
     time: 0,
   });
+
   return (
     <div className="fixed top-0 left-0 bg-black/70 w-full h-full flex items-center">
       <div className="bg-white border-2 border-gray-200 rounded-lg w-2xl mx-auto p-5">
         <div className="flex flex-row-reverse justify-between mb-5">
-          <button onClick={toggleTaskModal} className="h-min p-1 rounded-sm">
+          <button
+            onClick={handleToggleTaskModal}
+            className="h-min p-1 rounded-sm"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -55,9 +62,8 @@ function TaskAddModal({ toggleTaskModal, handleAddTask }: TaskAddModalProps) {
               status: "todo",
               time: 0,
             });
-            toggleTaskModal();
+            handleToggleTaskModal();
           }}
-          action=""
         >
           <div className="flex flex-col gap-1.5 mb-4">
             <label htmlFor="title">Task title</label>
@@ -113,9 +119,7 @@ function TaskAddModal({ toggleTaskModal, handleAddTask }: TaskAddModalProps) {
               name=""
               id="category"
             >
-              <option defaultChecked value="Catalog">
-                Catalog
-              </option>
+              <option value="Catalog">Catalog</option>
               <option value="PDP">PDP</option>
               <option value="Header">Header</option>
               <option value="Home">Home</option>
