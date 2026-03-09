@@ -7,13 +7,20 @@ import type { ITask, TTaskStatus } from "./types/Task.type.ts";
 function App() {
   const [isShowModal, setIsShowModal] = useState(false);
   const [tasks, setTasks] = useState<ITask[]>([]);
-  const [filterSelected, setFilterSelected] = useState<
-    "all" | "todo" | "inprogress" | "completed"
-  >("all");
+  const [filterSelected, setFilterSelected] = useState<TTaskStatus | "all">(
+    "all",
+  );
 
   useEffect(() => {
-    setTasks(JSON.parse(localStorage.getItem("tasks") || "[]"));
+    setTasks(getDataFromLocalStorage());
   }, []);
+
+  const setDataToLocalStorage = (data: ITask[]) => {
+    localStorage.setItem("tasks", JSON.stringify(data));
+  };
+  const getDataFromLocalStorage = () => {
+    return JSON.parse(localStorage.getItem("tasks") || "[]");
+  };
 
   const handleToggleTaskModal = () => {
     setIsShowModal((prev) => !prev);
@@ -22,22 +29,19 @@ function App() {
   const handleAddTask = (formData: ITask) => {
     const newTasks = [...tasks, formData];
     setTasks(newTasks);
-    localStorage.setItem("tasks", JSON.stringify(newTasks));
+    setDataToLocalStorage(newTasks);
   };
 
   const handleDeleteTask = (id: string) => {
     const filteredTasks = tasks.filter((item) => item.id !== id);
-    localStorage.setItem("tasks", JSON.stringify(filteredTasks));
+    setDataToLocalStorage(filteredTasks);
     setTasks(filteredTasks);
   };
 
   const handleFilterTasks = (type: TTaskStatus | "all") => {
     setFilterSelected(type);
 
-    const tasksFromStorage: ITask[] = JSON.parse(
-      localStorage.getItem("tasks") || "[]",
-    );
-
+    const tasksFromStorage: ITask[] = getDataFromLocalStorage();
     if (type === "all") {
       setTasks(tasksFromStorage);
     } else {
@@ -52,7 +56,7 @@ function App() {
         : item,
     );
     setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setDataToLocalStorage(updatedTasks);
   };
 
   return (
@@ -176,7 +180,7 @@ function App() {
       {isShowModal && (
         <TaskAddModal
           handleAddTask={handleAddTask}
-          handletoggleTaskModal={handleToggleTaskModal}
+          handleToggleTaskModal={handleToggleTaskModal}
         ></TaskAddModal>
       )}
     </div>
