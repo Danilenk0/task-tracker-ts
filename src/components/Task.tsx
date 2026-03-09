@@ -6,9 +6,15 @@ interface ITaskProps {
   task: ITask;
   handleDeleteTask: (id: string) => void;
   handleUpdateTaskTime: (id: string, newTime: number) => void;
+  handleCheckTask: (id: string) => void;
 }
 
-function Task({ task, handleDeleteTask, handleUpdateTaskTime }: ITaskProps) {
+function Task({
+  task,
+  handleDeleteTask,
+  handleUpdateTaskTime,
+  handleCheckTask,
+}: ITaskProps) {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [seconds, setSeconds] = useState(task.time || 0);
 
@@ -36,10 +42,17 @@ function Task({ task, handleDeleteTask, handleUpdateTaskTime }: ITaskProps) {
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 flex gap-4 items-start mt-5">
-      <input className="mt-1 w-5 h-5 rounded-lg" type="checkbox" />
+      <input
+        checked={task.status === "completed"}
+        onChange={() => handleCheckTask(task.id)}
+        className="mt-1 w-5 h-5 rounded-lg"
+        type="checkbox"
+      />
       <div className="flex flex-col w-full gap-2">
-        <h1>{task.title}</h1>
-        <p className="text-gray-700">{task.description}</p>
+        <h1 className={`${task.status === "completed" ? "line-through" : ""}`}>
+          {task.title}
+        </h1>
+        <p className="text-gray-500">{task.description}</p>
         <div className="flex items-center gap-x-2">
           <p className="block py-0.3 px-3 rounded-3xl border border-gray-200 text-[14px]">
             {task.category}

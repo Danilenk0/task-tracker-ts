@@ -59,6 +59,34 @@ function App() {
     setDataToLocalStorage(updatedTasks);
   };
 
+  const handleCheckTask = (id: string) => {
+    const updatedTasks: ITask[] = tasks.map((item) => {
+      if (item.id === id) {
+        if (item.status === "completed" && item.time !== 0) {
+          return {
+            ...item,
+            status: "inprogress",
+          };
+        } else if (item.status === "completed" && item.time === 0) {
+          return {
+            ...item,
+            status: "todo",
+          };
+        } else if (item.status !== "completed") {
+          return {
+            ...item,
+            status: "completed",
+          };
+        }
+      }
+
+      return item;
+    });
+
+    setTasks(updatedTasks);
+    setDataToLocalStorage(updatedTasks);
+  };
+
   return (
     <div className="max-w-6xl mx-auto p-6 my-10 rounded-lg border border-gray-200 bg-gray-200/25">
       <h1 className="text-neutral-900 mb-2">MAJESTEY LONDON</h1>
@@ -174,6 +202,7 @@ function App() {
           task={task}
           handleDeleteTask={handleDeleteTask}
           handleUpdateTaskTime={handleUpdateTaskTime}
+          handleCheckTask={handleCheckTask}
         ></Task>
       ))}
 
