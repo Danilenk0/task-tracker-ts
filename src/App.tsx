@@ -13,12 +13,10 @@ function App() {
   const toggleTaskModal = () => {
     setIsShowModal((prev) => !prev);
   };
-  const addTask = (formData: ITask) => {
-    const data: ITask[] = JSON.parse(localStorage.getItem("tasks") || "[]");
-
-    data.push(formData);
-    setTasks(data);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+  const handleAddTask = (formData: ITask) => {
+    const newTasks = [...tasks, formData];
+    setTasks(newTasks);
+    localStorage.setItem("tasks", JSON.stringify(newTasks));
   };
   return (
     <div className="max-w-6xl mx-auto p-6 my-10 rounded-lg border border-gray-200 bg-gray-200/25">
@@ -124,7 +122,7 @@ function App() {
 
       {isShowModal && (
         <TaskAddModal
-          addTask={addTask}
+          handleAddTask={handleAddTask}
           toggleTaskModal={toggleTaskModal}
         ></TaskAddModal>
       )}

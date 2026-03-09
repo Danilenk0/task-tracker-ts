@@ -4,11 +4,12 @@ import type { ITask } from "../types/Task.type.ts";
 
 interface TaskAddModalProps {
   toggleTaskModal: () => void;
-  addTask: (fromData: ITask) => void;
+  handleAddTask: (fromData: ITask) => void;
 }
 
-function TaskAddModal({ toggleTaskModal, addTask }: TaskAddModalProps) {
+function TaskAddModal({ toggleTaskModal, handleAddTask }: TaskAddModalProps) {
   const [formData, setFormData] = useState<ITask>({
+    id: crypto.randomUUID(),
     title: "",
     description: "",
     category: "",
@@ -45,8 +46,9 @@ function TaskAddModal({ toggleTaskModal, addTask }: TaskAddModalProps) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            addTask(formData);
+            handleAddTask(formData);
             setFormData({
+              id: crypto.randomUUID(),
               title: "",
               description: "",
               category: "",
@@ -111,7 +113,9 @@ function TaskAddModal({ toggleTaskModal, addTask }: TaskAddModalProps) {
               name=""
               id="category"
             >
-              <option value="Catalog">Catalog</option>
+              <option defaultChecked value="Catalog">
+                Catalog
+              </option>
               <option value="PDP">PDP</option>
               <option value="Header">Header</option>
               <option value="Home">Home</option>
