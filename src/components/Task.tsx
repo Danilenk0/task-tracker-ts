@@ -1,26 +1,26 @@
 import Button from "../components/Button.tsx";
+import type { ITask } from "../types/Task.type.ts";
 
-type TaskProps = {
-  title: string;
-  description?: string;
-  category: string;
-};
+interface ITaskProps {
+  task: ITask;
+  handleDeleteTask: (id: string) => void;
+}
 
-function Task({ title, description, category }: TaskProps) {
+function Task({ task, handleDeleteTask }: ITaskProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 flex gap-4 items-start mt-5">
       <input className="mt-1 w-5 h-5 rounded-lg" type="checkbox" />
       <div className="flex flex-col w-full gap-2">
-        <h1>{title}</h1>
-        <p className="text-gray-700">{description}</p>
+        <h1>{task.title}</h1>
+        <p className="text-gray-700">{task.description}</p>
         <div className="flex items-center gap-x-2">
           <p className="block py-0.3 px-3 rounded-3xl border border-gray-200 text-[14px]">
-            {category}
+            {task.category}
           </p>
           <p className="text-[14px]">10:00</p>
         </div>
         <div className="flex items-center gap-2 w-min">
-          <Button mode="light">
+          <Button action={() => {}} type="button" mode="light">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -37,7 +37,7 @@ function Task({ title, description, category }: TaskProps) {
             </svg>
             <p>Start</p>
           </Button>
-          <Button mode="light">
+          <Button action={() => {}} type="button" mode="light">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -54,7 +54,11 @@ function Task({ title, description, category }: TaskProps) {
             </svg>
             <p>Edit</p>
           </Button>
-          <Button mode="delete">
+          <Button
+            action={() => handleDeleteTask(task.id)}
+            type="button"
+            mode="delete"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

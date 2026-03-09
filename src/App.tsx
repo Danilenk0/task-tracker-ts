@@ -18,6 +18,11 @@ function App() {
     setTasks(newTasks);
     localStorage.setItem("tasks", JSON.stringify(newTasks));
   };
+  const handleDeleteTask = (id: string) => {
+    const filteredTasks = tasks.filter((item) => item.id !== id);
+    localStorage.setItem("tasks", JSON.stringify(filteredTasks));
+    setTasks(filteredTasks);
+  };
   return (
     <div className="max-w-6xl mx-auto p-6 my-10 rounded-lg border border-gray-200 bg-gray-200/25">
       <h1 className="text-neutral-900 mb-2">MAJESTEY LONDON</h1>
@@ -111,12 +116,11 @@ function App() {
           </Button>
         </div>
       </div>
-      {tasks.map((task, index) => (
+      {tasks.map((task) => (
         <Task
-          key={index}
-          title={task.title}
-          description={task.description}
-          category={task.category}
+          key={task.id}
+          task={task}
+          handleDeleteTask={handleDeleteTask}
         ></Task>
       ))}
 
