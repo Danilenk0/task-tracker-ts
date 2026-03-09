@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { ITask } from "../types/Task.type.ts";
 
 interface TaskAddModalProps {
-  handletoggleTaskModal: () => void;
+  handleToggleTaskModal: () => void;
   handleAddTask: (fromData: ITask) => void;
 }
 
