@@ -3,10 +3,13 @@ import "./App.css";
 import Button from "./components/Button";
 import Task from "./components/Task";
 import TaskAddModal from "./components/TaskAddModal";
-import type { ITask } from "./types/Task.type.ts";
+import type { ITask, TTaskStatus } from "./types/Task.type.ts";
 function App() {
   const [isShowModal, setIsShowModal] = useState(false);
   const [tasks, setTasks] = useState<ITask[]>([]);
+  const [filterSelected, setFilterSelected] = useState<
+    "all" | "todo" | "inprogress" | "completed"
+  >("all");
   useEffect(() => {
     setTasks(JSON.parse(localStorage.getItem("tasks") || "[]"));
   }, []);
@@ -22,6 +25,19 @@ function App() {
     const filteredTasks = tasks.filter((item) => item.id !== id);
     localStorage.setItem("tasks", JSON.stringify(filteredTasks));
     setTasks(filteredTasks);
+  };
+  const handleFilterTasks = (type: TTaskStatus | "all") => {
+    setFilterSelected(type);
+
+    const tasksFromStorage: ITask[] = JSON.parse(
+      localStorage.getItem("tasks") || "[]",
+    );
+
+    if (type === "all") {
+      setTasks(tasksFromStorage);
+    } else {
+      setTasks(tasksFromStorage.filter((task) => task.status === type));
+    }
   };
   return (
     <div className="max-w-6xl mx-auto p-6 my-10 rounded-lg border border-gray-200 bg-gray-200/25">
@@ -102,16 +118,32 @@ function App() {
           <input className="w-full outline-none bg-transparent" type="text" />
         </form>
         <div className="flex items-center gap-2">
-          <Button action={() => {}} type="button" mode="dark">
+          <Button
+            action={() => handleFilterTasks("all")}
+            type="button"
+            mode={filterSelected === "all" ? "dark" : "light"}
+          >
             All
           </Button>
-          <Button action={() => {}} type="button" mode="light">
+          <Button
+            action={() => handleFilterTasks("todo")}
+            type="button"
+            mode={filterSelected === "todo" ? "dark" : "light"}
+          >
             To Do
           </Button>
-          <Button action={() => {}} type="button" mode="light">
+          <Button
+            action={() => handleFilterTasks("inprogress")}
+            type="button"
+            mode={filterSelected === "inprogress" ? "dark" : "light"}
+          >
             In progress
           </Button>
-          <Button action={() => {}} type="button" mode="light">
+          <Button
+            action={() => handleFilterTasks("completed")}
+            type="button"
+            mode={filterSelected === "completed" ? "dark" : "light"}
+          >
             Completed
           </Button>
         </div>
